@@ -1,0 +1,76 @@
+let currentQuestionIndex = 0;
+let score = 0;
+let timer;
+let timeLeft = 30;
+let totalQuestions = 5; // Total number of quiz questions
+let progressBar = document.getElementById('progress-bar');
+let timerElement = document.getElementById('timer');
+let feedbackElement = document.getElementById('quiz-feedback');
+let cityInput = document.getElementById('city-name');
+let scoreElement = document.getElementById('quiz-score');
+
+const questions = [
+  {
+    question: "What is the capital of France?",
+    options: ["Berlin", "Paris", "Madrid", "Rome"],
+    answer: "Paris"
+  },
+  {
+    question: "What is 2 + 2?",
+    options: ["3", "4", "5", "6"],
+    answer: "4"
+  },
+  {
+    question: "Who wrote 'To Kill a Mockingbird'?",
+    options: ["Harper Lee", "J.K. Rowling", "Ernest Hemingway", "Mark Twain"],
+    answer: "Harper Lee"
+  },
+  {
+    question: "Which planet is known as the Red Planet?",
+    options: ["Earth", "Mars", "Jupiter", "Saturn"],
+    answer: "Mars"
+  },
+  {
+    question: "What is the largest ocean on Earth?",
+    options: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"],
+    answer: "Pacific Ocean"
+  }
+];
+
+const questionElement = document.getElementById('question');
+const optionsElement = document.getElementById('options');
+
+function startTimer() {
+  timer = setInterval(() => {
+    timeLeft--;
+    timerElement.textContent = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      nextQuestion();
+    }
+  }, 1000);
+}
+
+function updateProgressBar() {
+  const progress = (currentQuestionIndex / totalQuestions) * 100;
+  progressBar.style.width = progress + '%';
+}
+
+function displayQuestion() {
+  if (currentQuestionIndex < questions.length) {
+    const currentQuestion = questions[currentQuestionIndex];
+    questionElement.textContent = currentQuestion.question;
+    optionsElement.innerHTML = '';
+    currentQuestion.options.forEach(option => {
+      const button = document.createElement('div');
+      button.classList.add('quiz-option');
+      button.textContent = option;
+      button.onclick = () => checkAnswer(option);
+      optionsElement.appendChild(button);
+    });
+    updateProgressBar();
+    startTimer();
+  } else {
+    questionElement.textContent = "You have completed the quiz!";
+    optionsElement.style.display = "none";
+    feedbackElement.textContent = `Your final score is: ${score} / ${questions.length}`;
